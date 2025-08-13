@@ -1,4 +1,5 @@
 import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/axios';
@@ -11,6 +12,15 @@ const Dashboard = () => {
   const [isRateLimited, setIsRateLimiter] = useState(false);
   const [workouts,setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -30,16 +40,19 @@ const Dashboard = () => {
       } finally {
         setLoading(false);
       }
-  };
-  
-  fetchWorkouts();
-},[]);
+    };
+    
+    fetchWorkouts();
+  },[]);
+
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <Navbar onMenuClick={toggleSidebar} />
+      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+      
       {isRateLimited && <RateLimitedUI />}
 
-      <div className="max-w-7xl mx-auto p-4 mt-6 space-y-8">
+      <div className="max-w-7xl mx-auto p-4 mt-6 space-y-8 transition-all duration-300">
         {/* Biometrics Section */}
         <section>
           <h2 className="text-2xl font-bold mb-4">Personal Biometrics</h2>
@@ -63,9 +76,9 @@ const Dashboard = () => {
             </div>
           )}
         </section>
-
       </div>
     </div>
   )
 }
-export default Dashboard
+
+export default Dashboard;

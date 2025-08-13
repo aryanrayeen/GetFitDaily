@@ -1,14 +1,23 @@
 import { Link } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
-const Navbar = () => {
+const Navbar = ({ onMenuClick }) => {
   return ( 
   <header className="bg-base-300 border-b border-base-content/10"> 
   <div className="mx-auto max-w-6xl p-4">
     <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-primary font-mono tracking-tight">
-        GetFitDaily
-        </h1>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onMenuClick}
+            className="btn btn-ghost btn-circle"
+          >
+            <Menu size={24} />
+          </button>
+          <h1 className="text-3xl font-bold text-primary font-mono tracking-tight">
+          GetFitDaily
+          </h1>
+        </div>
         <div className="flex items-center gap-x-4">
             <Link to="/createworkout" className="btn btn-primary">
             <PlusIcon className="size-6" />
