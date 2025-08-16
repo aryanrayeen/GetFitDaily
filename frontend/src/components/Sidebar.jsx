@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { X, Youtube, UtensilsCrossed, TrendingUp, Trophy, Calendar, Home } from 'lucide-react';
+import { X, Youtube, UtensilsCrossed, TrendingUp, Trophy, Calendar, Home, Wind, MessageSquare } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const sidebarItems = [
@@ -9,6 +9,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     { name: 'Progress Tracker', path: '/progress-tracker', icon: TrendingUp },
     { name: 'LeaderBoard', path: '/leaderboard', icon: Trophy },
     { name: 'Habit Calendar', path: '/habit-calendar', icon: Calendar },
+    { name: 'Zen Section', path: '/zen-section', icon: Wind },
+    { name: 'Telehealth Service', path: '/telehealth-service', icon: MessageSquare },
   ];
 
   return (
