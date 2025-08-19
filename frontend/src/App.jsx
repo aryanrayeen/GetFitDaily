@@ -5,6 +5,8 @@ import CreateWorkout from './pages/CreateWorkout';
 import WorkoutPlan from './pages/WorkoutPlan';
 import Tutorials from './pages/Tutorials';
 import ZenSection from './pages/ZenSection';
+import ProgressTracker from './pages/ProgressTracker';
+import MealPlanner from './pages/MealPlanner';
 
 
 const App = () => {
@@ -16,6 +18,8 @@ const App = () => {
         <Route path="/workoutplan/:id" element={<WorkoutPlan />} />
         <Route path="/tutorials" element={<Tutorials />} />
         <Route path="/zen-section" element={<ZenSection />} />
+        <Route path="/progress-tracker" element={<ProgressTracker />} />
+        <Route path="/meal-planner" element={<MealPlanner />} />
       </Routes>
       
     </div>

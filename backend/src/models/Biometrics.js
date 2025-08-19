@@ -21,6 +21,23 @@ const biometricsSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    waistMeasurement: {
+        type: Number,
+        default: null
+    },
+    bodyFatPercentage: {
+        type: Number,
+        default: null
+    },
+    goalWeight: {
+        type: Number,
+        default: null
+    },
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'other'],
+        default: 'male'
+    },
     date: {
         type: Date,
         default: Date.now

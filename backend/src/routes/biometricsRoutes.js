@@ -1,5 +1,12 @@
 import express from 'express';
-import { getBiometrics, updateBiometrics } from '../controllers/biometricsController.js';
+import { 
+    getBiometrics, 
+    updateBiometrics, 
+    getBiometricsHistory,
+    addWeightEntry,
+    addWaistEntry,
+    addBodyFatEntry 
+} from '../controllers/biometricsController.js';
 import rateLimiter from '../middleware/rateLimiter.js';
 
 const router = express.Router();
@@ -7,7 +14,19 @@ const router = express.Router();
 // Get the latest biometrics
 router.get('/', getBiometrics);
 
+// Get biometrics history
+router.get('/history', getBiometricsHistory);
+
 // Create or update biometrics
 router.post('/', rateLimiter, updateBiometrics);
+
+// Add weight entry
+router.post('/weight', rateLimiter, addWeightEntry);
+
+// Add waist measurement entry
+router.post('/waist', rateLimiter, addWaistEntry);
+
+// Add body fat percentage entry
+router.post('/bodyfat', rateLimiter, addBodyFatEntry);
 
 export default router;

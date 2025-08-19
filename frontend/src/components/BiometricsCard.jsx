@@ -9,7 +9,10 @@ const BiometricsCard = () => {
     height: "",
     weight: "",
     caloriesIntake: "",
-    exerciseMinutes: ""
+    exerciseMinutes: "",
+    goalWeight: "",
+    waistMeasurement: "",
+    bodyFatPercentage: ""
   });
 
   const [editing, setEditing] = useState(false);
@@ -103,6 +106,48 @@ const BiometricsCard = () => {
                 placeholder="Enter your weight in kg"
               />
             </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text flex items-center gap-2">
+                  <Ruler className="size-4" /> Waist Measurement (cm)
+                </span>
+              </label>
+              <input
+                type="number"
+                className="input input-bordered"
+                value={biometrics.waistMeasurement}
+                onChange={(e) => setBiometrics({...biometrics, waistMeasurement: e.target.value})}
+                placeholder="Enter your waist measurement in cm"
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text flex items-center gap-2">
+                  <Activity className="size-4" /> Body Fat (%)
+                </span>
+              </label>
+              <input
+                type="number"
+                className="input input-bordered"
+                value={biometrics.bodyFatPercentage}
+                onChange={(e) => setBiometrics({...biometrics, bodyFatPercentage: e.target.value})}
+                placeholder="Enter your body fat percentage"
+              />
+            </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text flex items-center gap-2">
+                    <Weight className="size-4" /> Goal Weight (kg)
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  className="input input-bordered"
+                  value={biometrics.goalWeight}
+                  onChange={(e) => setBiometrics({...biometrics, goalWeight: e.target.value})}
+                  placeholder="Enter your goal weight in kg"
+                />
+              </div>
 
             <div className="form-control">
               <label className="label">
@@ -140,6 +185,24 @@ const BiometricsCard = () => {
           </form>
         ) : (
           <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="stat bg-base-100 rounded-box p-4">
+              <div className="stat-title flex items-center gap-2">
+                <Ruler className="size-4" /> Waist Measurement
+              </div>
+              <div className="stat-value text-lg">{biometrics.waistMeasurement ? `${biometrics.waistMeasurement} cm` : "-"}</div>
+            </div>
+            <div className="stat bg-base-100 rounded-box p-4">
+              <div className="stat-title flex items-center gap-2">
+                <Activity className="size-4" /> Body Fat (%)
+              </div>
+              <div className="stat-value text-lg">{biometrics.bodyFatPercentage ? `${biometrics.bodyFatPercentage} %` : "-"}</div>
+            </div>
+            <div className="stat bg-base-100 rounded-box p-4">
+              <div className="stat-title flex items-center gap-2">
+                <Weight className="size-4" /> Goal Weight
+              </div>
+              <div className="stat-value text-lg">{biometrics.goalWeight ? `${biometrics.goalWeight} kg` : "-"}</div>
+            </div>
             <div className="stat bg-base-100 rounded-box p-4">
               <div className="stat-title flex items-center gap-2">
                 <Calendar className="size-4" /> Age
