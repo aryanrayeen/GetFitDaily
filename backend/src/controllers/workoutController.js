@@ -2,7 +2,7 @@ import Workout from "../models/Workout.js";
 
 export async function getALLWorkouts(req,res) {
     try {
-      const workouts = await Workout.find().sort({createdAt: -1});//newest first
+      const workouts = await Workout.find({ user: req.userId }).sort({createdAt: -1});//newest first, user-specific
       res.status(200).json(workouts);
     } catch (error) {
       console.error("Error in getALLWorkouts controller", error);  
@@ -12,7 +12,7 @@ export async function getALLWorkouts(req,res) {
 
 export async function getWorkoutById(req,res) {
     try {
-      const workouts = await Workout.findById(req.params.id);
+      const workouts = await Workout.findOne({ _id: req.params.id, user: req.userId });
       if(!workouts) return res.status(404).json({message: "Workout not found!"});
       res.json(workouts);
     } catch (error) {
@@ -25,7 +25,7 @@ export async function getWorkoutById(req,res) {
 export async function createWorkout(req,res) {
     try {
       const {title,content} = req.body ;
-      const workouts = new Workout({title, content});
+      const workouts = new Workout({title, content, user: req.userId});
 
       const savedWorkout = await workouts.save();
       res.status(201).json(savedWorkout);
@@ -38,10 +38,13 @@ export async function createWorkout(req,res) {
 export async function updateWorkout(req,res) {
     try {
       const {title,content} = req.body;
-      const updateWorkout = await Workout.findByIdAndUpdate(req.params.id,{title,content},{new:true,});
+      const updateWorkout = await Workout.findOneAndUpdate(
+        { _id: req.params.id, user: req.userId },
+        {title,content},
+        {new:true}
+      );
     
       if(!updateWorkout) return res.status(404).json({message:"Workout not found"});
-
 
       res.status(200).json(updateWorkout);
     } catch (error) {
@@ -52,11 +55,9 @@ export async function updateWorkout(req,res) {
 
 export async function deleteWorkout(req,res) {
     try {
-      const {title,content} = req.body;
-      const deleteWorkout = await Workout.findByIdAndDelete(req.params.id,{title,content},{new:true,});
+      const deleteWorkout = await Workout.findOneAndDelete({ _id: req.params.id, user: req.userId });
     
       if(!deleteWorkout) return res.status(404).json({message:"Workout not found"});
-
 
       res.status(200).json(deleteWorkout);  
     } catch (error) {

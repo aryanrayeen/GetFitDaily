@@ -8,8 +8,12 @@ import {
     addBodyFatEntry 
 } from '../controllers/biometricsController.js';
 import rateLimiter from '../middleware/rateLimiter.js';
+import { verifyToken } from '../middleware/verifyToken.js';
 
 const router = express.Router();
+
+// All biometrics routes require authentication
+router.use(verifyToken);
 
 // Get the latest biometrics
 router.get('/', getBiometrics);

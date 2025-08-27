@@ -4,6 +4,24 @@ import { useState, useEffect } from 'react';
 import api from '../lib/axios';
 import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
+// Helper functions for BMI calculation
+const calculateBMI = (weight, height) => {
+  if (!weight || !height) return 'N/A';
+  const heightInMeters = height / 100;
+  const bmi = weight / (heightInMeters * heightInMeters);
+  return bmi.toFixed(1);
+};
+
+const getBMICategory = (bmi) => {
+  if (bmi === 'N/A') return { category: 'N/A', color: 'text-base-content' };
+  
+  const bmiNum = parseFloat(bmi);
+  if (bmiNum < 18.5) return { category: 'Underweight', color: 'text-blue-500' };
+  if (bmiNum < 25) return { category: 'Normal', color: 'text-green-500' };
+  if (bmiNum < 30) return { category: 'Overweight', color: 'text-yellow-500' };
+  return { category: 'Obese', color: 'text-red-500' };
+};
+
 const ProgressTracker = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentWeight, setCurrentWeight] = useState('');
@@ -16,11 +34,11 @@ const ProgressTracker = () => {
   
   // User data from backend
   const [userInfo, setUserInfo] = useState({
-    height: 175,
-    age: 25,
-    gender: 'male',
-    currentWeight: 70,
-    goalWeight: 75
+    height: null,
+    age: null,
+    gender: null,
+    currentWeight: null,
+    goalWeight: null
   });
   const [goalWeightInput, setGoalWeightInput] = useState('');
   const [goalWeightLoading, setGoalWeightLoading] = useState(false);
@@ -62,11 +80,12 @@ const ProgressTracker = () => {
           age: response.data.age,
           gender: response.data.gender || 'male',
           currentWeight: response.data.weight,
-          goalWeight: response.data.goalWeight || response.data.weight + 5
+          goalWeight: response.data.goalWeight || null
         });
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      // Keep userInfo as null values when no data exists
     }
   };
 
@@ -117,12 +136,14 @@ const ProgressTracker = () => {
 
   // Calculate BMI
   const calculateBMI = (weight, height) => {
+    if (!weight || !height) return 'N/A';
     const heightInM = height / 100;
     return (weight / (heightInM * heightInM)).toFixed(1);
   };
 
   // Get BMI category
   const getBMICategory = (bmi) => {
+    if (bmi === 'N/A') return { category: 'No data', color: 'text-gray-500' };
     if (bmi < 18.5) return { category: 'Underweight', color: 'text-blue-500' };
     if (bmi < 25) return { category: 'Normal', color: 'text-green-500' };
     if (bmi < 30) return { category: 'Overweight', color: 'text-yellow-500' };
@@ -209,6 +230,10 @@ const ProgressTracker = () => {
 
   // Calculate progress towards goal
   const calculateProgress = () => {
+    if (!userInfo.currentWeight || !userInfo.goalWeight) {
+      return 0;
+    }
+    
     const startWeight = weightHistory.length > 0 ? weightHistory[0].value : userInfo.currentWeight;
     const currentWeightValue = userInfo.currentWeight;
     const goalWeight = userInfo.goalWeight;
@@ -235,10 +260,14 @@ const ProgressTracker = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-base-200 rounded-xl shadow-md p-6 text-center">
             <h3 className="text-lg font-semibold mb-2">Current Weight</h3>
-            <p className="text-3xl font-bold text-primary">{userInfo.currentWeight} kg</p>
+            <p className="text-3xl font-bold text-primary">
+              {userInfo.currentWeight ? `${userInfo.currentWeight} kg` : 'No data'}
+            </p>
             <div className="flex flex-col items-center gap-2 mt-2">
               <label className="text-sm text-base-content/70">Goal Weight:</label>
-              <div className="text-xl font-semibold text-primary">{userInfo.goalWeight} kg</div>
+              <div className="text-xl font-semibold text-primary">
+                {userInfo.goalWeight ? `${userInfo.goalWeight} kg` : 'No data'}
+              </div>
             </div>
           </div>
           <div className="bg-base-200 rounded-xl shadow-md p-6 text-center">

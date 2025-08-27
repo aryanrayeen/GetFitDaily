@@ -3,7 +3,7 @@ import Biometrics from '../models/Biometrics.js';
 // Get the latest biometrics
 export const getBiometrics = async (req, res) => {
     try {
-        const biometrics = await Biometrics.findOne().sort({ date: -1 });
+        const biometrics = await Biometrics.findOne({ user: req.userId }).sort({ date: -1 });
         res.status(200).json(biometrics);
     } catch (error) {
         console.error('Error in getBiometrics:', error);
@@ -18,13 +18,13 @@ export const getBiometricsHistory = async (req, res) => {
         let biometrics;
         
         if (type === 'weight') {
-            biometrics = await Biometrics.find({}, 'weight date').sort({ date: -1 }).limit(parseInt(limit));
+            biometrics = await Biometrics.find({ user: req.userId }, 'weight date').sort({ date: -1 }).limit(parseInt(limit));
         } else if (type === 'waist') {
-            biometrics = await Biometrics.find({ waistMeasurement: { $ne: null } }, 'waistMeasurement date').sort({ date: -1 }).limit(parseInt(limit));
+            biometrics = await Biometrics.find({ user: req.userId, waistMeasurement: { $ne: null } }, 'waistMeasurement date').sort({ date: -1 }).limit(parseInt(limit));
         } else if (type === 'bodyfat') {
-            biometrics = await Biometrics.find({ bodyFatPercentage: { $ne: null } }, 'bodyFatPercentage date').sort({ date: -1 }).limit(parseInt(limit));
+            biometrics = await Biometrics.find({ user: req.userId, bodyFatPercentage: { $ne: null } }, 'bodyFatPercentage date').sort({ date: -1 }).limit(parseInt(limit));
         } else {
-            biometrics = await Biometrics.find().sort({ date: -1 }).limit(parseInt(limit));
+            biometrics = await Biometrics.find({ user: req.userId }).sort({ date: -1 }).limit(parseInt(limit));
         }
         
         res.status(200).json(biometrics);
@@ -54,7 +54,8 @@ export const updateBiometrics = async (req, res) => {
             waistMeasurement: waistMeasurement || null,
             bodyFatPercentage: bodyFatPercentage || null,
             goalWeight: goalWeight || null,
-            gender: gender || 'male'
+            gender: gender || 'male',
+            user: req.userId
         });
 
         await biometrics.save();
@@ -75,7 +76,7 @@ export const addWeightEntry = async (req, res) => {
         }
 
         // Get latest biometrics to copy other values
-        const latestBiometrics = await Biometrics.findOne().sort({ date: -1 });
+        const latestBiometrics = await Biometrics.findOne({ user: req.userId }).sort({ date: -1 });
         
         if (!latestBiometrics) {
             return res.status(400).json({ message: 'No existing biometrics found. Please complete your profile first.' });
@@ -91,7 +92,8 @@ export const addWeightEntry = async (req, res) => {
             waistMeasurement: latestBiometrics.waistMeasurement,
             bodyFatPercentage: latestBiometrics.bodyFatPercentage,
             goalWeight: latestBiometrics.goalWeight,
-            gender: latestBiometrics.gender
+            gender: latestBiometrics.gender,
+            user: req.userId
         });
 
         await newEntry.save();
@@ -112,7 +114,7 @@ export const addWaistEntry = async (req, res) => {
         }
 
         // Get latest biometrics to copy other values
-        const latestBiometrics = await Biometrics.findOne().sort({ date: -1 });
+        const latestBiometrics = await Biometrics.findOne({ user: req.userId }).sort({ date: -1 });
         
         if (!latestBiometrics) {
             return res.status(400).json({ message: 'No existing biometrics found. Please complete your profile first.' });
@@ -128,7 +130,8 @@ export const addWaistEntry = async (req, res) => {
             waistMeasurement: parseFloat(waistMeasurement),
             bodyFatPercentage: latestBiometrics.bodyFatPercentage,
             goalWeight: latestBiometrics.goalWeight,
-            gender: latestBiometrics.gender
+            gender: latestBiometrics.gender,
+            user: req.userId
         });
 
         await newEntry.save();
@@ -149,7 +152,7 @@ export const addBodyFatEntry = async (req, res) => {
         }
 
         // Get latest biometrics to copy other values
-        const latestBiometrics = await Biometrics.findOne().sort({ date: -1 });
+        const latestBiometrics = await Biometrics.findOne({ user: req.userId }).sort({ date: -1 });
         
         if (!latestBiometrics) {
             return res.status(400).json({ message: 'No existing biometrics found. Please complete your profile first.' });
@@ -165,7 +168,8 @@ export const addBodyFatEntry = async (req, res) => {
             waistMeasurement: latestBiometrics.waistMeasurement,
             bodyFatPercentage: parseFloat(bodyFatPercentage),
             goalWeight: latestBiometrics.goalWeight,
-            gender: latestBiometrics.gender
+            gender: latestBiometrics.gender,
+            user: req.userId
         });
 
         await newEntry.save();

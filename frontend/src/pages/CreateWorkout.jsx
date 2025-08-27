@@ -3,6 +3,8 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../lib/axios";
+import Chatbot from "../components/Chatbot";
+import { workoutQuestions } from "../lib/chatbotData";
 
 const CreateWorkout = () => {
   const [title, setTitle] = useState("");
@@ -95,6 +97,9 @@ const CreateWorkout = () => {
           </div>
         </div>
       </div>
+      
+      {/* Chatbot Component */}
+      <Chatbot questions={workoutQuestions} type="workout" />
     </div>
   );
 };

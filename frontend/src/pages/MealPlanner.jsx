@@ -1,8 +1,10 @@
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import Chatbot from '../components/Chatbot';
 import { useState, useEffect } from 'react';
 import { Plus, Utensils, Trash2, Save, TrendingUp } from 'lucide-react';
 import api from '../lib/axios';
+import { mealPlannerQuestions } from '../lib/chatbotData';
 
 const MealPlanner = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -36,13 +38,14 @@ const MealPlanner = () => {
       setCategories(response.data);
       if (response.data.length > 0) {
         setSelectedCategory(response.data[0]);
+      } else {
+        // If no categories found, seed the database
+        await seedDatabase();
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
-      // If no categories found, seed the database
-      if (error.response?.status === 404 || response?.data?.length === 0) {
-        await seedDatabase();
-      }
+      // If error or no categories, try seeding the database
+      await seedDatabase();
     } finally {
       setCategoriesLoading(false);
     }
@@ -72,7 +75,12 @@ const MealPlanner = () => {
   const seedDatabase = async () => {
     try {
       await api.post('/meals/seed');
-      fetchCategories();
+      // After seeding, fetch categories again without triggering infinite loop
+      const response = await api.get('/meals/categories');
+      setCategories(response.data);
+      if (response.data.length > 0) {
+        setSelectedCategory(response.data[0]);
+      }
     } catch (error) {
       console.error('Error seeding database:', error);
     }
@@ -417,6 +425,9 @@ const MealPlanner = () => {
           </div>
         </div>
       </div>
+      
+      {/* Chatbot Component */}
+      <Chatbot questions={mealPlannerQuestions} type="meal" />
     </div>
   );
 };

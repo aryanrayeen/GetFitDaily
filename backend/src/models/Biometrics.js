@@ -38,6 +38,11 @@ const biometricsSchema = new mongoose.Schema({
         enum: ['male', 'female', 'other'],
         default: 'male'
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     date: {
         type: Date,
         default: Date.now

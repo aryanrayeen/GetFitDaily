@@ -12,7 +12,8 @@ const BiometricsCard = () => {
     exerciseMinutes: "",
     goalWeight: "",
     waistMeasurement: "",
-    bodyFatPercentage: ""
+    bodyFatPercentage: "",
+    gender: "male"
   });
 
   const [editing, setEditing] = useState(false);
@@ -177,6 +178,21 @@ const BiometricsCard = () => {
                 onChange={(e) => setBiometrics({...biometrics, caloriesIntake: e.target.value})}
                 placeholder="Daily calorie target"
               />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Gender</span>
+              </label>
+              <select
+                className="select select-bordered"
+                value={biometrics.gender}
+                onChange={(e) => setBiometrics({...biometrics, gender: e.target.value})}
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
             </div>
 
             <button type="submit" className="btn btn-primary w-full">
