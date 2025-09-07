@@ -40,15 +40,26 @@ export const createMealPlan = async (req, res) => {
         console.log('Creating meal plan for user:', req.userId);
         console.log('Meal plan data:', { name, foods });
 
+        if (!name || !foods || !Array.isArray(foods) || foods.length === 0) {
+            return res.status(400).json({ message: 'Name and foods array are required' });
+        }
+
         // Calculate total calories and protein
         let totalCalories = 0;
         let totalProtein = 0;
 
         for (const item of foods) {
+            if (!item.food) {
+                return res.status(400).json({ message: 'Each food item must have a food ID' });
+            }
+            
             const food = await Food.findById(item.food);
             if (food) {
-                totalCalories += food.calories * (item.quantity || 1);
-                totalProtein += food.protein * (item.quantity || 1);
+                const quantity = item.quantity || 1;
+                totalCalories += food.calories * quantity;
+                totalProtein += food.protein * quantity;
+            } else {
+                return res.status(400).json({ message: `Food with ID ${item.food} not found` });
             }
         }
 
@@ -63,6 +74,7 @@ export const createMealPlan = async (req, res) => {
         await mealPlan.save();
         await mealPlan.populate('foods.food');
         
+        console.log('Meal plan created successfully:', mealPlan._id);
         res.status(201).json(mealPlan);
     } catch (error) {
         console.error('Error creating meal plan:', error);
