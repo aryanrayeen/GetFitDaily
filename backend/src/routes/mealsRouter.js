@@ -20,23 +20,11 @@ router.get('/test', (req, res) => {
 
 // Get all food categories
 router.get('/categories', getFoodCategories);
-
-// Get all foods by category
 router.get('/foods', getFoodsByCategory);
-
-// Seed foods data (for development)
 router.post('/seed', seedFoods);
-
-// Protected routes - require authentication
 router.use(verifyToken);
-
-// Get user's meal plans
 router.get('/plans', getMealPlans);
-
-// Create a new meal plan
 router.post('/plans', createMealPlan);
-
-// Delete a meal plan
 router.delete('/plans/:id', deleteMealPlan);
 
 export default router;
